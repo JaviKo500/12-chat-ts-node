@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { Users } from '../models/users';
+import { createMessage } from '../utils/createMessage';
 
 const users = new Users();
 
@@ -21,7 +22,22 @@ export const socketController = ( socket: Socket ) => {
 
     socket.on('disconnect', () => {
         const { name } = users.removeUser( socket.id ) ?? {};
-        socket.broadcast.emit('create-message', { user: 'Admin', message: `${name} out chat` });
+        socket.broadcast.emit('create-message', createMessage( 'Admin', `${name} out chat`) );
         socket.broadcast.emit( 'user-list',  users.getUsers()  );
     });
+
+    socket.on( 'create-message', ( data ) => {
+        const  { message } = data;
+        const { name }  = users.getUserById( socket.id ) ?? {};
+        const customMessage = createMessage( name ?? '', message );
+        socket.broadcast.emit('create-message', customMessage );
+    } );
+
+    // * private message
+    socket.on( 'private-message', ( data ) => {
+        const  { id, message } = data;
+        const { name }  = users.getUserById( socket.id ) ?? {};
+        const customMessage = createMessage( name ?? '', message );
+        socket.broadcast.to(id).emit('create-message', customMessage );
+    } );
 }

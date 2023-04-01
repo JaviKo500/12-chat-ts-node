@@ -26,3 +26,13 @@ socket.on( 'create-message', (message) => {
 socket.on( 'user-list', (users) => {
     console.log(users);
 });
+
+// socket.emit('create-message', payload, ( id ) => {
+//     console.log('server: ', id);
+// });
+
+// * private massage
+
+socket.on( 'private-massage', ( message ) => {
+    console.log('private message', message);
+} );
