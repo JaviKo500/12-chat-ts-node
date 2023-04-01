@@ -7,7 +7,6 @@ export class Users {
 
     addUser = ( user: User ) => {
         this.users.push( user );    
-        return this.users;
     }
 
     getUserById = (id: string) => {
@@ -18,8 +17,8 @@ export class Users {
         return this.users;    
     }
 
-    getUserBySale = ( sale: string ) => {
-        // TODO after
+    getUsersBySale = ( sale: string ) => {
+       return this.users.filter( user => user.sale === sale );
     }
 
     removeUser = ( id: string ) => {

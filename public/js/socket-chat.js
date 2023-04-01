@@ -1,12 +1,13 @@
 
 const params = new URLSearchParams( window.location.search );
-if ( !params.has('name') ) {
+if ( !params.has('name') || !params.has('sale') ) {
     window.location = 'index.html';
-    throw new Error('Name is required');
+    throw new Error('Name and sale are required');
 }
 
 const user = {
-    name : params.get('name')
+    name : params.get('name'),
+    sale : params.get('sale')
 }
 
 const socket = io();

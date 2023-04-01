@@ -8,29 +8,33 @@ export const socketController = ( socket: Socket ) => {
     console.log( 'connect', socket.id);
     socket.on( 'enter-chat', ( user, callback ) => {
         console.log(user);
-        if ( !user.name ) {
+        const { name, sale } = user;
+        if ( !name || !sale ) {
             return callback({
                 error: true,
                 message: 'Name is required'
             });
         }
+        
+        socket.join( sale );
+
         user.id = socket.id;
-        const usersList = users.addUser( user );
-        socket.broadcast.emit( 'user-list',  users.getUsers()  );
-        callback(usersList); 
+        users.addUser( user );
+        socket.broadcast.to(sale).emit( 'user-list',  users.getUsersBySale( sale )  );
+        callback(users.getUsersBySale( sale )); 
     });
 
     socket.on('disconnect', () => {
-        const { name } = users.removeUser( socket.id ) ?? {};
-        socket.broadcast.emit('create-message', createMessage( 'Admin', `${name} out chat`) );
-        socket.broadcast.emit( 'user-list',  users.getUsers()  );
+        const { name, sale } = users.removeUser( socket.id ) ?? {};
+        socket.broadcast.to(sale ?? []).emit('create-message', createMessage( 'Admin', `${name} out chat`) );
+        socket.broadcast.to(sale ?? []).emit( 'user-list',  users.getUsersBySale(sale ?? '')  );
     });
 
     socket.on( 'create-message', ( data ) => {
         const  { message } = data;
-        const { name }  = users.getUserById( socket.id ) ?? {};
+        const { name, sale }  = users.getUserById( socket.id ) ?? {};
         const customMessage = createMessage( name ?? '', message );
-        socket.broadcast.emit('create-message', customMessage );
+        socket.broadcast.to(sale ?? []).emit('create-message', customMessage );
     } );
 
     // * private message
