@@ -1,19 +1,19 @@
 
 const params = new URLSearchParams( window.location.search );
-if ( !params.has('name') || !params.has('sale') ) {
+if ( !paramsChat.has('name') || !paramsChat.has('sale') ) {
     window.location = 'index.html';
     throw new Error('Name and sale are required');
 }
 
 const user = {
-    name : params.get('name'),
-    sale : params.get('sale')
+    name : paramsChat.get('name'),
+    sale : paramsChat.get('sale')
 }
 
 const socket = io();
 socket.on( 'connect', () => {
     socket.emit('enter-chat', user, ( resp ) => {
-        console.log(resp);
+        renderUsers( resp );
     });
 });
 socket.on( 'disconnect', () => {
@@ -25,7 +25,7 @@ socket.on( 'create-message', (message) => {
 });
 
 socket.on( 'user-list', (users) => {
-    console.log(users);
+    renderUsers(users)
 });
 
 // socket.emit('create-message', payload, ( id ) => {
