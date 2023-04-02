@@ -21,6 +21,7 @@ export const socketController = ( socket: Socket ) => {
         user.id = socket.id;
         users.addUser( user );
         socket.broadcast.to(sale).emit( 'user-list',  users.getUsersBySale( sale )  );
+        socket.broadcast.to(sale).emit('create-message', createMessage( 'Admin', `${name} joined chat`) );
         callback(users.getUsersBySale( sale )); 
     });
 

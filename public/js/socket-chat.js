@@ -22,7 +22,8 @@ socket.on( 'disconnect', () => {
 
 socket.on( 'create-message', (message) => {
     // console.log(message);
-    renderMessages(message);
+    renderMessages(message, false);
+    scrollBottom();
 });
 
 socket.on( 'user-list', (users) => {
