@@ -30,11 +30,13 @@ export const socketController = ( socket: Socket ) => {
         socket.broadcast.to(sale ?? []).emit( 'user-list',  users.getUsersBySale(sale ?? '')  );
     });
 
-    socket.on( 'create-message', ( data ) => {
+    socket.on( 'create-message', ( data, callback ) => {
         const  { message } = data;
         const { name, sale }  = users.getUserById( socket.id ) ?? {};
         const customMessage = createMessage( name ?? '', message );
         socket.broadcast.to(sale ?? []).emit('create-message', customMessage );
+
+        callback( customMessage );
     } );
 
     // * private message

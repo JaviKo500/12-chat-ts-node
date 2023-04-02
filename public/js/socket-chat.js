@@ -21,11 +21,12 @@ socket.on( 'disconnect', () => {
 });
 
 socket.on( 'create-message', (message) => {
-    console.log(message);
+    // console.log(message);
+    renderMessages(message);
 });
 
 socket.on( 'user-list', (users) => {
-    renderUsers(users)
+    renderUsers(users);
 });
 
 // socket.emit('create-message', payload, ( id ) => {
